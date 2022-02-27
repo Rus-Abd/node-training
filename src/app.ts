@@ -1,49 +1,30 @@
-// import { IncomingMessage, ServerResponse } from 'http';
-import express = require('express');
-const todos = require('./todos');
-const middlewares = require('./middleware');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const express = require('express');
+const morgan = require('morgan');
+const helmet = require('helmet');
 const cors = require('cors');
-dotenv.config({ path: '../.env' });
-const { Schema } = mongoose;
-const router = express.Router();
-const PORT = process.env.PORT || 3000;
-const app = express();
-// app.listen(PORT, () => {
-//   console.log('Listening at PORT: ' + PORT);
-// });
+import { Request, Response } from 'express';
+require('dotenv').config();
 
-// app.get('/todos/', (req: express.Request, res: express.Response) => {
-//   if (req.query.page == '1' && req.query.limit == '10') {
-//     res.send('Hello World!' + req.query.page + req.query.limit);
-//   }
-// });
-// app.post('/', () => {});
-// async function start() {
-//   try {
-//     await mongoose.connect(
-//       'mongodb+srv://admin:admin@cluster0.selxi.mongodb.net/todos',
-//       {}
-//     );
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-//
-//
-//
-const model = new Schema({
-  message: String,
-  completed: Boolean,
-  id: String,
-});
-//
-//
-//
+const middlewares = require('./middlewares');
+const api = require('./api');
+
+const app = express();
+
+app.use(morgan('dev'));
+app.use(helmet());
 app.use(cors());
-router.use('/todos', todos);
+app.use(express.json());
+
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
+  });
+});
+
+app.use('/', api);
+
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 
 module.exports = app;
+export {};
